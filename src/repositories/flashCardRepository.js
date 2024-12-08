@@ -15,9 +15,12 @@ const getFlashCardCategoryById = async (flashCardSetId) => {
     return result[0];
 };
 
-const getAllFlashCards = async (flashCardSetId) => {
-    const [rows] = await db.query('SELECT * FROM flashcard WHERE flash_card_set_id = ?',
-        [flashCardSetId]
+const getAllFlashCards = async (userId,flashCardSetId) => {
+    // const [rows] = await db.query('SELECT * FROM flashcard WHERE flash_card_set_id = ?',
+    //     [flashCardSetId]
+    // );
+    const [rows] = await db.query('SELECT fc.* FROM FlashCard fc LEFT JOIN Hide h ON fc.id = h.flash_card_id AND h.user_id = ? WHERE h.flash_card_id IS NULL AND fc.flash_card_set_id = ?',
+        [userId,flashCardSetId]
     );
     return rows;
 };
@@ -27,14 +30,19 @@ const createFlashCard = async (question, answer, categoryId, userId) => {
     return { id: result.insertId, question, answer, categoryId, userId };
 };
 
-const addRating = async (user_id, flash_card_set_id, description,rating) => {
+const addRating = async (user_id, flash_card_set_id, description, rating) => {
     const [result] = await db.query('INSERT INTO Rating (user_id, flash_card_set_id, description,rating) VALUES (?, ?, ?,?)', [user_id, flash_card_set_id, description, rating]);
     return { id: result.insertId, user_id, flash_card_set_id, description, rating };
 };
 
-const getRating = async () => {
-    const [rows] = await db.query('SELECT * FROM Rating');
+const getRating = async (categoryId) => {
+    const [rows] = await db.query('SELECT u.email,r.rating,r.description FROM Rating r JOIN user u ON u.id = r.user_id AND r.flash_card_set_id = ?', [categoryId]);
     return rows;
+};
+
+const hideFlashCard = async (userId, flashCardId) => {
+    const [result] = await db.query('INSERT INTO Hide (user_id, flash_card_id) VALUES (?, ?)', [userId, flashCardId]);
+    return { userId, flashCardId };
 };
 
 export default {
@@ -44,5 +52,6 @@ export default {
     createFlashCard,
     getFlashCardCategoryById,
     addRating,
-    getRating
+    getRating,
+    hideFlashCard
 };

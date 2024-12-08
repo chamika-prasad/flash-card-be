@@ -36,8 +36,13 @@ export const createFlashCardCategory = async (req, res) => {
 export const getAllFlashCards = async (req, res) => {
   try {
     const { flashCardSetId } = req.params;
-    console.log(flashCardSetId);
-    const flashCards = await flashCardService.getAllFlashCards(flashCardSetId);
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = verifyToken(token);
+    const userId = decoded.id;
+    console.log("userId in controller:",userId);
+    console.log("flashCardSetId in controller:",flashCardSetId);
+    
+    const flashCards = await flashCardService.getAllFlashCards(userId,flashCardSetId);
     res.status(200).json(flashCards);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -60,12 +65,10 @@ export const createFlashCard = async (req, res) => {
 export const addRating = async (req, res) => {
   try {
     const { flash_card_set_id, description, rating } = req.body;
-    console.log(rating, description, flash_card_set_id);
     const token = req.headers.authorization.split(' ')[1];
     const decoded = verifyToken(token);
     const userId = decoded.id;
-    console.log(userId);
-    const rateItem = await flashCardService.addRating(userId, flash_card_set_id, description,rating);
+    const rateItem = await flashCardService.addRating(userId, flash_card_set_id, description, rating);
     res.status(201).json(rateItem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -73,14 +76,24 @@ export const addRating = async (req, res) => {
 };
 
 export const getRating = async (req, res) => {
-  // try {
-  //   console.log("hello");
-    
-  //   const ratings = await flashCardService.getRating();
-  //   res.status(200).json(ratings);
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message });
-  // }
-  console.log("gggg");
-  
+  try {
+    const { categoryId } = req.params;
+    const ratings = await flashCardService.getRating(categoryId);
+    res.status(200).json(ratings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const hideFlashCard = async (req, res) => {
+  try {
+    const { flashCardId } = req.body;
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = verifyToken(token);
+    const userId = decoded.id;
+    const hideItem = await flashCardService.hideFlashCard(userId, flashCardId);
+    res.status(200).json(hideItem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };

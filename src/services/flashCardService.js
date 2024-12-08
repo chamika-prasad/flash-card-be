@@ -16,8 +16,8 @@ const createFlashCardCategory = async (name,userId,description) => {
   return category;
 };
 
-const getAllFlashCards = async (flashCardSetId) => {
-  const flashCards = await flashCardRepository.getAllFlashCards(flashCardSetId);
+const getAllFlashCards = async (userId,flashCardSetId) => {
+  const flashCards = await flashCardRepository.getAllFlashCards(userId,flashCardSetId);
   return flashCards;
 };
 
@@ -33,11 +33,15 @@ const addRating = async (user_id, flash_card_set_id, description,rating) => {
   return ratingItem;
 };
 
-const getRating = async () => {
-  const ratings = await flashCardRepository.getRating();
+const getRating = async (categoryId) => {
+  const ratings = await flashCardRepository.getRating(categoryId);
   return ratings;
 };
 
+const hideFlashCard = async (userId,flashCardId) => {
+  const hideItem = await flashCardRepository.hideFlashCard(userId,flashCardId);
+  return hideItem;
+};
 
 export default {
   getAllFlashCardCategories,
@@ -46,5 +50,6 @@ export default {
   createFlashCard,
   getFlashCardCategoryById,
   addRating,
-  getRating
+  getRating,
+  hideFlashCard
 };

@@ -15,8 +15,6 @@ export const createTelemetry = async (req, res) => {
         const telemetry = await telemetryService.createTelemetry(userId, flashCardId, action, startAt, endAt);
         res.status(201).json({ telemetry });
     } catch (error) {
-        console.log(error);
-
         res.status(500).json({ message: error.message });
     }
 };
