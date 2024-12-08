@@ -1,7 +1,8 @@
-import { createTelemetry } from "../controllers/telemetryController.js";
-import { Router } from 'express';
+const express = require('express');
+const { createTelemetry } = require('../controllers/telemetryController.js');
 
-const router = Router();
+const router = express.Router();
 
 router.post('/', createTelemetry);
-export default router;
+
+module.exports = router;

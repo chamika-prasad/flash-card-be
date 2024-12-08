@@ -1,10 +1,10 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import userRoutes from './routes/userRoutes.js';
-import flashCardRoutes from './routes/flashCardRoutes.js';
-import telemetryRoutes from './routes/telemetryRoutes.js';
-import { authenticateToken } from './middleware/authMiddleware.js';
-import cors from 'cors';
+const express = require('express');
+const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes.js');
+const flashCardRoutes = require('./routes/flashCardRoutes.js');
+const telemetryRoutes = require('./routes/telemetryRoutes.js');
+const { authenticateToken } = require('./middleware/authMiddleware.js');
+const cors = require('cors');
 
 dotenv.config();
 
@@ -19,4 +19,4 @@ app.use('/api/users', userRoutes);
 app.use('/api/flashcards', authenticateToken, flashCardRoutes);
 app.use('/api/telemetry', authenticateToken, telemetryRoutes);
 
-export default app;
+module.exports = app;

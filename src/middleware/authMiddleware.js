@@ -1,7 +1,6 @@
-import { verifyToken } from '../utils/jwtUtils.js';
+const { verifyToken } = require('../utils/jwtUtils.js');
 
-export const authenticateToken = (req, res, next) => {
-
+const authenticateToken = (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
 
     if (!token) {
@@ -16,3 +15,5 @@ export const authenticateToken = (req, res, next) => {
         return res.status(403).json({ message: 'Failed to authenticate token' });
     }
 };
+
+module.exports = { authenticateToken };

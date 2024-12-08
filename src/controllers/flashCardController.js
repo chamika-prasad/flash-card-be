@@ -1,7 +1,7 @@
-import flashCardService from '../services/flashCardService.js';
-import { verifyToken } from '../utils/jwtUtils.js';
+const flashCardService = require('../services/flashCardService.js');
+const { verifyToken } = require('../utils/jwtUtils.js');
 
-export const getAllFlashCardCategories = async (req, res) => {
+const getAllFlashCardCategories = async (req, res) => {
   try {
     const categories = await flashCardService.getAllFlashCardCategories();
     res.status(200).json(categories);
@@ -10,7 +10,7 @@ export const getAllFlashCardCategories = async (req, res) => {
   }
 };
 
-export const getFlashCardCategoryById = async (req, res) => {
+const getFlashCardCategoryById = async (req, res) => {
   try {
     const { flashCardSetId } = req.params;
     const category = await flashCardService.getFlashCardCategoryById(flashCardSetId);
@@ -20,7 +20,7 @@ export const getFlashCardCategoryById = async (req, res) => {
   }
 };
 
-export const createFlashCardCategory = async (req, res) => {
+const createFlashCardCategory = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const decoded = verifyToken(token);
@@ -33,23 +33,23 @@ export const createFlashCardCategory = async (req, res) => {
   }
 };
 
-export const getAllFlashCards = async (req, res) => {
+const getAllFlashCards = async (req, res) => {
   try {
     const { flashCardSetId } = req.params;
     const token = req.headers.authorization.split(' ')[1];
     const decoded = verifyToken(token);
     const userId = decoded.id;
-    console.log("userId in controller:",userId);
-    console.log("flashCardSetId in controller:",flashCardSetId);
+    console.log("userId in controller:", userId);
+    console.log("flashCardSetId in controller:", flashCardSetId);
     
-    const flashCards = await flashCardService.getAllFlashCards(userId,flashCardSetId);
+    const flashCards = await flashCardService.getAllFlashCards(userId, flashCardSetId);
     res.status(200).json(flashCards);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-export const createFlashCard = async (req, res) => {
+const createFlashCard = async (req, res) => {
   try {
     const { question, answer, categoryId } = req.body;
     const token = req.headers.authorization.split(' ')[1];
@@ -62,7 +62,7 @@ export const createFlashCard = async (req, res) => {
   }
 };
 
-export const addRating = async (req, res) => {
+const addRating = async (req, res) => {
   try {
     const { flash_card_set_id, description, rating } = req.body;
     const token = req.headers.authorization.split(' ')[1];
@@ -75,7 +75,7 @@ export const addRating = async (req, res) => {
   }
 };
 
-export const getRating = async (req, res) => {
+const getRating = async (req, res) => {
   try {
     const { categoryId } = req.params;
     const ratings = await flashCardService.getRating(categoryId);
@@ -85,7 +85,7 @@ export const getRating = async (req, res) => {
   }
 };
 
-export const hideFlashCard = async (req, res) => {
+const hideFlashCard = async (req, res) => {
   try {
     const { flashCardId } = req.body;
     const token = req.headers.authorization.split(' ')[1];
@@ -96,4 +96,15 @@ export const hideFlashCard = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports = {
+  getAllFlashCardCategories,
+  getFlashCardCategoryById,
+  createFlashCardCategory,
+  getAllFlashCards,
+  createFlashCard,
+  addRating,
+  getRating,
+  hideFlashCard,
 };

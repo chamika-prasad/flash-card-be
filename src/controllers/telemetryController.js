@@ -1,7 +1,7 @@
-import { verifyToken } from '../utils/jwtUtils.js';
-import telemetryService from '../services/telemetryServise.js';
+const { verifyToken } = require('../utils/jwtUtils.js');
+const telemetryService = require('../services/telemetryServise.js');
 
-export const createTelemetry = async (req, res) => {
+const createTelemetry = async (req, res) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
         const decoded = verifyToken(token);
@@ -18,3 +18,5 @@ export const createTelemetry = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+module.exports = { createTelemetry };

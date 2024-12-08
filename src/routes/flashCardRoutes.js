@@ -1,7 +1,16 @@
-import { Router } from 'express';
-import { getAllFlashCardCategories, createFlashCardCategory, getAllFlashCards, createFlashCard,getFlashCardCategoryById ,addRating, getRating,hideFlashCard} from '../controllers/flashCardController.js';
+const express = require('express');
+const {
+    getAllFlashCardCategories,
+    createFlashCardCategory,
+    getAllFlashCards,
+    createFlashCard,
+    getFlashCardCategoryById,
+    addRating,
+    getRating,
+    hideFlashCard
+} = require('../controllers/flashCardController.js');
 
-const router = Router();
+const router = express.Router();
 
 router.get('/categories', getAllFlashCardCategories);
 router.get('/categories/:flashCardSetId', getFlashCardCategoryById);
@@ -12,4 +21,4 @@ router.post('/', createFlashCard);
 router.post('/rating', addRating);
 router.post('/hide', hideFlashCard);
 
-export default router;
+module.exports = router;
