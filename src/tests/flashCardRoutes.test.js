@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../app');
 const flashCardService = require('../services/flashCardService');
+const settingService = require('../services/settingService');
 
 jest.mock('../services/flashCardService'); // Mock the flashCardService
 
@@ -65,6 +66,13 @@ describe('FlashCard Routes', () => {
   describe('POST /api/flashcards/categories', () => {
     test('should create a new flashcard category', async () => {
       const mockCategory = { id: 3, name: 'History' };
+      const mockLimit = { daily_limit: 5 };
+      const mockSets = [{ id: 1, name: 'maths' }, { id: 2, name: 'science' }];
+      flashCardService.createFlashCardCategory.mockResolvedValue(mockCategory);
+
+      // Mock services
+      flashCardService.getFlashCardSetsForTodayForUser = jest.fn().mockResolvedValue(mockSets);
+      settingService.getLimit = jest.fn().mockResolvedValue(mockLimit);
       flashCardService.createFlashCardCategory.mockResolvedValue(mockCategory);
 
       const res = await request(app)
@@ -77,6 +85,12 @@ describe('FlashCard Routes', () => {
     });
 
     test('should return 500 if there is a server error', async () => {
+      const mockLimit = { daily_limit: 5 };
+      const mockSets = [{ id: 1, name: 'maths' }, { id: 2, name: 'science' }];
+
+      // Mock services
+      flashCardService.getFlashCardSetsForTodayForUser = jest.fn().mockResolvedValue(mockSets);
+      settingService.getLimit = jest.fn().mockResolvedValue(mockLimit);
       flashCardService.createFlashCardCategory.mockRejectedValue(
         new Error('Database Error')
       );

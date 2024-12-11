@@ -43,6 +43,11 @@ const hideFlashCard = async (userId, flashCardId) => {
     return hideItem;
 };
 
+const getFlashCardSetsForTodayForUser = async (userId) => {
+    const sets = await flashCardRepository.getFlashCardSetsForTodayForUser(userId);
+    return sets;
+};
+
 module.exports = {
     getAllFlashCardCategories,
     createFlashCardCategory,
@@ -51,5 +56,6 @@ module.exports = {
     getFlashCardCategoryById,
     addRating,
     getRating,
-    hideFlashCard
+    hideFlashCard,
+    getFlashCardSetsForTodayForUser
 };

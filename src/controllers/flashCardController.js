@@ -1,4 +1,5 @@
 const flashCardService = require('../services/flashCardService.js');
+const settingService = require('../services/settingService.js');
 const { verifyToken } = require('../utils/jwtUtils.js');
 
 const getAllFlashCardCategories = async (req, res) => {
@@ -23,8 +24,13 @@ const getFlashCardCategoryById = async (req, res) => {
 const createFlashCardCategory = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
+    const limit = await settingService.getLimit();
     const decoded = verifyToken(token);
     const userId = decoded.id;
+    const sets = await flashCardService.getFlashCardSetsForTodayForUser(userId);
+    if(limit.daily_limit <= sets.length){
+      return res.status(400).json(`You exceed the daily limit of ${limit.daily_limit}`);
+    }
     const { name, description } = req.body;
     const category = await flashCardService.createFlashCardCategory(name, userId, description);
     res.status(201).json({ category });

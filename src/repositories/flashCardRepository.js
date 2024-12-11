@@ -42,6 +42,11 @@ const hideFlashCard = async (userId, flashCardId) => {
     return { userId, flashCardId };
 };
 
+const getFlashCardSetsForTodayForUser = async (userId) => {
+        const [rows] = await db.query('SELECT * FROM FlashCardSet WHERE user_id = ? AND DATE(createdAt) = CURDATE()', [userId]);
+        return rows;
+};
+
 module.exports = {
     getAllFlashCardCategories,
     createFlashCardCategory,
@@ -50,5 +55,6 @@ module.exports = {
     getFlashCardCategoryById,
     addRating,
     getRating,
-    hideFlashCard
+    hideFlashCard,
+    getFlashCardSetsForTodayForUser
 };

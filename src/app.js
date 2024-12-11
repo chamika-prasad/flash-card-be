@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes.js');
 const flashCardRoutes = require('./routes/flashCardRoutes.js');
 const telemetryRoutes = require('./routes/telemetryRoutes.js');
+const settingRoutes = require('./routes/settingRoutes.js');
 const { authenticateToken } = require('./middleware/authMiddleware.js');
 const cors = require('cors');
 
@@ -18,5 +19,6 @@ app.use(cors());
 app.use('/api/users', userRoutes);
 app.use('/api/flashcards', authenticateToken, flashCardRoutes);
 app.use('/api/telemetry', authenticateToken, telemetryRoutes);
+app.use('/api/setting', authenticateToken, settingRoutes);
 
 module.exports = app;
