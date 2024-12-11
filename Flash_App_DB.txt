@@ -1,0 +1,107 @@
+-- Create Database
+CREATE DATABASE flash_app;
+
+-- Use the database
+USE flash_app;
+
+-- Create User Table
+CREATE TABLE User (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role INT
+);
+
+-- Create FlashCardSet Table
+CREATE TABLE FlashCardSet (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    name VARCHAR(255) NOT NULL,
+    user_id CHAR(36),
+    FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
+-- Create Settings Table
+CREATE TABLE Settings (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    daily_limit INT
+);
+
+-- Create Hide Table
+CREATE TABLE Hide (
+    user_id CHAR(36),
+    flash_card_id CHAR(36),
+    PRIMARY KEY (user_id, flash_card_id),
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    FOREIGN KEY (flash_card_id) REFERENCES FlashCardSet(id)
+);
+
+
+-- Create FlashCard Table (with additional user_id)
+CREATE TABLE FlashCard (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    flash_card_set_id CHAR(36),
+    user_id CHAR(36),
+    FOREIGN KEY (flash_card_set_id) REFERENCES FlashCardSet(id),
+    FOREIGN KEY (user_id) REFERENCES User(id)
+);
+
+-- Create Telemetry Table
+CREATE TABLE Telemetry (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    user_id CHAR(36),
+    flash_card_id CHAR(36),
+    action INT,
+    start_at DATETIME,
+    end_at DATETIME,
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    FOREIGN KEY (flash_card_id) REFERENCES FlashCard(id)
+);
+
+-- Create Rating Table (with user_id and flash_card_set_id)
+CREATE TABLE Rating (
+    id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+    user_id CHAR(36),
+    flash_card_set_id CHAR(36),
+    description VARCHAR(255),
+    rating INT,
+    FOREIGN KEY (user_id) REFERENCES User(id),
+    FOREIGN KEY (flash_card_set_id) REFERENCES FlashCardSet(id)
+);
+
+
+ALTER TABLE FlashCardSet
+ADD description TEXT;
+
+DROP TABLE IF EXISTS Hide;
+
+CREATE TABLE Hide (
+    user_id CHAR(36),
+    flash_card_id CHAR(36),
+    PRIMARY KEY (user_id, flash_card_id),
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (flash_card_id) REFERENCES flashcard(id)
+);
+
+
+ALTER TABLE FlashCardSet
+ADD createdAt DATETIME;
+
+UPDATE FlashCardSet
+SET createdAt = NOW();
+
+ALTER TABLE FlashCardSet
+MODIFY createdAt DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+ALTER TABLE FlashCard
+ADD createdAt DATETIME;
+
+
+UPDATE FlashCard
+SET createdAt = NOW();
+
+ALTER TABLE FlashCard
+MODIFY createdAt DATETIME DEFAULT CURRENT_TIMESTAMP;
+
+INSERT INTO Settings (daily_limit) VALUES (20);
